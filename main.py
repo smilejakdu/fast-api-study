@@ -10,5 +10,5 @@ async def Index():
 
 
 @app.get('/articles/{id}')
-def get_article(id: int):
+def get_article(book_title):
     return {"article": {id}}
