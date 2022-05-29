@@ -5,7 +5,7 @@
 
 https://dingrr.com/blog/post/python-%EC%9B%B9%ED%94%84%EB%A0%88%EC%9E%84%EC%9B%8C%ED%81%AC-%EB%81%9D%ED%8C%90%EC%99%95-%EA%B0%80%EB%A6%AC%EA%B8%B0-django-flask-fastapi-sanic
 
-## `Fast API`장점
+## `Fast API` 장점
 
 - 빠르다.
 
@@ -13,6 +13,8 @@ https://dingrr.com/blog/post/python-%EC%9B%B9%ED%94%84%EB%A0%88%EC%9E%84%EC%9B%8
 
 - 생태계가 아직 많이 없다. ( 레퍼런스가 많이 없다.)
 - 아직 베타버전
+- 자동으로 `import` 할때 정확히 경로를 못잡는것 같다.
+- ORM 을 사용할때 자동완성이 안되는것이 존재한다.
 
 jinja 를 사용해서 풀로 개발을 한다면 Django 를 사용하는것을 추천하고,
 Rest API 를 만든다고하면 , FAST API 를 사용하는것이 좋다.

@@ -1,14 +1,10 @@
-import sys
-sys.path.append("..")
-
 from typing import Optional
 from fastapi import Depends, HTTPException, APIRouter
-import models
-from database import engine, SessionLocal
+from RestTodo.entity import models
+from RestTodo.config.database import engine, SessionLocal
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
-from .auth import get_current_user, get_user_exception
-
+from RestTodo.routers.auth import get_current_user, get_user_exception
 
 router = APIRouter(
     prefix="/todos",
@@ -44,8 +40,8 @@ async def read_all_by_user(user: dict = Depends(get_current_user),
                            db: Session = Depends(get_db)):
     if user is None:
         raise get_user_exception()
-    return db.query(models.Todos)\
-        .filter(models.Todos.owner_id == user.get("id"))\
+    return db.query(models.Todos) \
+        .filter(models.Todos.owner_id == user.get("id")) \
         .all()
 
 
@@ -55,9 +51,9 @@ async def read_todo(todo_id: int,
                     db: Session = Depends(get_db)):
     if user is None:
         raise get_user_exception()
-    todo_model = db.query(models.Todos)\
-        .filter(models.Todos.id == todo_id)\
-        .filter(models.Todos.owner_id == user.get("id"))\
+    todo_model = db.query(models.Todos) \
+        .filter(models.Todos.id == todo_id) \
+        .filter(models.Todos.owner_id == user.get("id")) \
         .first()
     if todo_model is not None:
         return todo_model
@@ -91,9 +87,9 @@ async def update_todo(todo_id: int,
     if user is None:
         raise get_user_exception()
 
-    todo_model = db.query(models.Todos)\
-        .filter(models.Todos.id == todo_id)\
-        .filter(models.Todos.owner_id == user.get("id"))\
+    todo_model = db.query(models.Todos) \
+        .filter(models.Todos.id == todo_id) \
+        .filter(models.Todos.owner_id == user.get("id")) \
         .first()
 
     if todo_model is None:
@@ -117,16 +113,16 @@ async def delete_todo(todo_id: int,
     if user is None:
         raise get_user_exception()
 
-    todo_model = db.query(models.Todos)\
-        .filter(models.Todos.id == todo_id)\
-        .filter(models.Todos.owner_id == user.get("id"))\
+    todo_model = db.query(models.Todos) \
+        .filter(models.Todos.id == todo_id) \
+        .filter(models.Todos.owner_id == user.get("id")) \
         .first()
 
     if todo_model is None:
         raise http_exception()
 
-    db.query(models.Todos)\
-        .filter(models.Todos.id == todo_id)\
+    db.query(models.Todos) \
+        .filter(models.Todos.id == todo_id) \
         .delete()
 
     db.commit()
