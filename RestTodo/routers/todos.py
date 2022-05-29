@@ -1,10 +1,10 @@
 from typing import Optional
 from fastapi import Depends, HTTPException, APIRouter
 from RestTodo.entity import models
-from RestTodo.config.database import engine, SessionLocal
+from RestTodo.config.database import engine, SessionLocal, get_db
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
-from RestTodo.routers.auth import get_current_user, get_user_exception
+from RestTodo.routers.users import get_current_user, get_user_exception
 
 router = APIRouter(
     prefix="/todos",
@@ -13,14 +13,6 @@ router = APIRouter(
 )
 
 models.Base.metadata.create_all(bind=engine)
-
-
-def get_db():
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close()
 
 
 class Todo(BaseModel):

@@ -8,7 +8,7 @@ from typing import Optional
 from RestTodo.entity import models
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-from RestTodo.config.database import SessionLocal, engine
+from RestTodo.config.database import SessionLocal, engine, get_db
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
@@ -20,6 +20,7 @@ ALGORITHM = "HS256"
 class CreateUser(BaseModel):
     username: str
     email: Optional[str]
+    img_url: str
     first_name: str
     last_name: str
     password: str
@@ -32,18 +33,10 @@ models.Base.metadata.create_all(bind=engine)
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
 
 router = APIRouter(
-    prefix="/auth",
-    tags=["auth"],
+    prefix="/user",
+    tags=["user"],
     responses={401: {"user": "Not authorized"}}
 )
-
-
-def get_db():
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close()
 
 
 def get_password_hash(password):
@@ -121,11 +114,11 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 @router.get("/find_user_all")
 async def find_user_all(db: Session = Depends(get_db)):
-    foundUser = db.query(models.Users).all()
-    print(foundUser)
+    found_user = db.query(models.Users).all()
+    print(found_user)
     return {
         "ok": True,
-        "data": foundUser,
+        "data": found_user,
     }
 
 
