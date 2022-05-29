@@ -1,12 +1,20 @@
+import sys
+sys.path.append("..")
+
 from typing import Optional
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import Depends, HTTPException, APIRouter
 import models
-from databsae import engine, SessionLocal
+from database import engine, SessionLocal
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
-from auth import get_current_user, get_user_exception
+from .auth import get_current_user, get_user_exception
 
-app = FastAPI()
+
+router = APIRouter(
+    prefix="/todos",
+    tags=["todos"],
+    responses={404: {"description": "Not found"}}
+)
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -26,12 +34,12 @@ class Todo(BaseModel):
     complete: bool
 
 
-@app.get("/")
+@router.get("/")
 async def read_all(db: Session = Depends(get_db)):
     return db.query(models.Todos).all()
 
 
-@app.get("/todos/user")
+@router.get("/user")
 async def read_all_by_user(user: dict = Depends(get_current_user),
                            db: Session = Depends(get_db)):
     if user is None:
@@ -41,7 +49,7 @@ async def read_all_by_user(user: dict = Depends(get_current_user),
         .all()
 
 
-@app.get("/todo/{todo_id}")
+@router.get("/{todo_id}")
 async def read_todo(todo_id: int,
                     user: dict = Depends(get_current_user),
                     db: Session = Depends(get_db)):
@@ -56,7 +64,7 @@ async def read_todo(todo_id: int,
     raise http_exception()
 
 
-@app.post("/")
+@router.post("/")
 async def create_todo(todo: Todo,
                       user: dict = Depends(get_current_user),
                       db: Session = Depends(get_db)):
@@ -75,7 +83,7 @@ async def create_todo(todo: Todo,
     return successful_response(201)
 
 
-@app.put("/{todo_id}")
+@router.put("/{todo_id}")
 async def update_todo(todo_id: int,
                       todo: Todo,
                       user: dict = Depends(get_current_user),
@@ -102,7 +110,7 @@ async def update_todo(todo_id: int,
     return successful_response(200)
 
 
-@app.delete("/{todo_id}")
+@router.delete("/{todo_id}")
 async def delete_todo(todo_id: int,
                       user: dict = Depends(get_current_user),
                       db: Session = Depends(get_db)):
@@ -135,19 +143,3 @@ def successful_response(status_code: int):
 
 def http_exception():
     return HTTPException(status_code=404, detail="Todo not found")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
