@@ -1,10 +1,13 @@
 from fastapi import FastAPI
-from config.database import engine, Base
-from routers import users, todos
+from fastapi_router_controller import ControllersTags
 
-app = FastAPI()
+from controller import users_controller
 
-Base.metadata.create_all(bind=engine)
+app = FastAPI(
+    title='fast api study',
+    description='This is a very fancy project, with auto docs for the API and everything',
+    version='0.0.1',
+    docs_url='/docs',
+    openapi_tags=ControllersTags)
 
-app.include_router(users.router)
-app.include_router(todos.router)
+app.include_router(users_controller.router)

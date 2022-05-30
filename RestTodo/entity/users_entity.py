@@ -1,8 +1,11 @@
-from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
+from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-from RestTodo.config.database import Base
+from RestTodo.config.database import engine
 from RestTodo.entity.todos_entity import Todos
+
+Base = declarative_base()
 
 
 class Users(Base):
@@ -18,3 +21,6 @@ class Users(Base):
     is_active = Column(Boolean, default=True)
 
     todos = relationship(Todos, back_populates="owner")
+
+
+Base.metadata.create_all(bind=engine)
